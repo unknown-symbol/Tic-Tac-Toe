@@ -1,0 +1,21 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.board-container {
+  display: grid;
+  gap: 0;
+  width: fit-content;
+  border: 1px solid #000000;
+  grid-template-columns: repeat(3, 1fr);
+}
+.square {
+  user-select: none;
+  font-size: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #000000;
+  width: 50px;
+  height: 50px;
+}
