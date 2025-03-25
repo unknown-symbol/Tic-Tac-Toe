@@ -1,6 +1,8 @@
 * {
   box-sizing: border-box;
   font-family: Arial, Helvetica, sans-serif;
+  border: none;
+  user-select: none;
 }
 body,
 html {
@@ -10,10 +12,111 @@ html {
 }
 .game-container {
   display: flex;
+  flex-direction: column;
   height: 100%;
+  gap: 20px;
   position: relative;
   justify-content: center;
   align-items: center;
+}
+.game-stats {
+  display: flex;
+  align-items: center;
+  background: #42424230;
+  border-radius: 5px;
+  gap: 40px;
+}
+.round {
+  color: aliceblue;
+  text-shadow: 2px 2px 5px #000000bb;
+  font-weight: 600;
+  font-size: 1.75rem;
+}
+.round-number {
+  color: #8efbff;
+}
+.player-card {
+  width: 7.5rem;
+  height: fit-content;
+  position: relative;
+  text-align: center;
+  background: #424242;
+  border: 2px solid #555;
+  color: aliceblue;
+  padding: 10px 20px;
+  font-size: 1.25rem;
+  text-shadow: 2px 2px 1px #00000050;
+  border-radius: 5px;
+  overflow: hidden;
+  text-wrap: nowrap;
+  z-index: 1;
+  transition: 0.1s;
+}
+.background-mark {
+  position: absolute;
+  display: flex;
+  top: -50px;
+  left: 70px;
+  font-size: 10rem;
+  color: #00000050;
+  text-shadow: none;
+  z-index: -1;
+}
+.player-name {
+  font-size: 1.5rem;
+  color: #f1ff75;
+}
+.player-score {
+  color: #adadad;
+}
+.player-score-number {
+  color: #fff;
+}
+.game-stats > .current {
+  background: #545454;
+  border: 2px solid #666;
+}
+.game-stats > .winner {
+  box-sizing: border-box;
+  border: 2px solid #00aa00;
+}
+.game-buttons {
+  display: flex;
+  gap: 20px;
+}
+.game-buttons > button {
+  position: relative;
+  width: fit-content;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #545454;
+  border: 2px solid #777;
+  border-radius: 5px;
+  color: aliceblue;
+  font-size: 1rem;
+  text-wrap: nowrap;
+  transition: 0.1s;
+  cursor: pointer;
+}
+.game-buttons > .round-button {
+  gap: 0;
+}
+.game-buttons > button > img {
+  width: 1.25rem;
+  vertical-align: middle;
+  display: inline;
+  filter: invert(1);
+}
+.game-buttons > button:hover {
+  background: #666;
+  border: 2px solid #888;
+}
+.game-buttons > button:disabled {
+  background: #323232;
+  border: 2px solid #444;
+  cursor: default;
 }
 .board-container {
   display: grid;
@@ -25,7 +128,6 @@ html {
   grid-template-columns: repeat(3, 1fr);
 }
 .square {
-  user-select: none;
   font-size: 6rem;
   display: flex;
   justify-content: center;
@@ -53,7 +155,6 @@ html {
 .winner-message {
   position: absolute;
   display: none;
-  user-select: none;
   align-self: center;
   font-weight: 600;
   color: aliceblue;
@@ -61,10 +162,11 @@ html {
   text-align: center;
   background: #00000070;
   width: 100%;
+  text-wrap: nowrap;
   font-size: 2rem;
   box-shadow: inset 0px 0px 10px -5px #000;
   padding: 5px 20px;
 }
 .winner-name {
-  color: rgb(241, 255, 117);
+  color: #f1ff75;
 }

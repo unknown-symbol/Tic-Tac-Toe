@@ -1,6 +1,13 @@
 const Elements = (() => {
   const boardContainer = document.querySelector(".board-container");
   const winnerMessage = document.querySelector(".winner-message");
+  const gameStats = document.querySelector(".game-stats");
+
+  const resetButton = document.querySelector(".reset-button");
+
+  resetButton.addEventListener("click", () => {
+    window.location.reload();
+  });
 
   const getSquares = () => {
     return boardContainer.querySelectorAll(".square");
@@ -8,15 +15,50 @@ const Elements = (() => {
 
   const newSquare = (mark) => {
     const square = document.createElement("div");
+
     square.className = "square";
     square.textContent = mark;
+
     return square;
   };
+  const setPlayers = (players, current, winner) => {
+    gameStats.querySelectorAll(".player-card").forEach((player, index) => {
+      player.classList.toggle("current", players[index] === current);
+      player.classList.toggle("winner", players[index] === winner);
 
+      player.querySelector(".player-name").textContent = players[index].name;
+      player
+        .querySelector(".player-score")
+        .querySelector(".player-score-number").textContent =
+        players[index].getScore();
+    });
+  };
   const setWinner = (winner) => {
-    if (!winner) return;
+    if (!winner) {
+      gameStats.querySelectorAll(".player-card").forEach((player) => {
+        player.classList.remove("current");
+        player.classList.remove("winner");
+      });
+
+      winnerMessage.style.display = "none";
+      return;
+    }
+
     winnerMessage.style.display = "inline";
     const winnerName = winnerMessage.querySelector(".winner-name");
+
+    const roundButton = document.querySelector(".round-button");
+
+    roundButton.disabled = false;
+
+    roundButton.addEventListener(
+      "click",
+      () => {
+        roundButton.disabled = true;
+        Controller.resetGame();
+      },
+      { once: true }
+    );
 
     winnerName.textContent = winner.name;
   };
@@ -29,12 +71,13 @@ const Elements = (() => {
 
   const createBoard = (board) => {
     clearBoard();
+
     board.forEach((square) => {
       boardContainer.appendChild(newSquare(square.mark));
     });
   };
 
-  return { createBoard, getSquares, clearBoard, setWinner };
+  return { createBoard, getSquares, clearBoard, setWinner, setPlayers };
 })();
 
 const Gameboard = (() => {
@@ -52,6 +95,8 @@ const Gameboard = (() => {
   };
 
   const create = () => {
+    board.length = 0;
+
     for (let index = 0; index < 9; index++) {
       board.push(square);
     }
@@ -78,16 +123,19 @@ const Controller = (() => {
     return newPlayer;
   }
 
+  const player1 = player("Me", "X");
+  const player2 = player("Not Me", "O");
+
   let currentPlayer;
   const playTurn = (player1, player2) => {
-    currentPlayer = currentPlayer === player1 ? player2 : player1;
-
     winner = checkWinner(Gameboard.getBoard());
 
     if (!winner) {
+      currentPlayer = currentPlayer === player1 ? player2 : player1;
+
       Elements.getSquares().forEach((element, index) => {
         if (element.textContent == "") {
-          element.classList += ` ${currentPlayer.mark}-mark`;
+          element.classList.add(`${currentPlayer.mark}-mark`);
           element.addEventListener(
             "click",
             () => {
@@ -99,20 +147,30 @@ const Controller = (() => {
         }
       });
     } else {
+      winner.giveScore();
+
       Elements.setWinner(winner);
+
       Elements.getSquares().forEach((element, index) => {
         if (winner.winCondition.includes(index)) {
-          element.classList += " win-position";
+          element.classList.add("win-position");
         }
       });
     }
+
+    Elements.setPlayers(players, currentPlayer, winner);
   };
 
   const startGame = () => {
-    const player1 = player("one", "X");
-    const player2 = player("two", "O");
+    Gameboard.create();
+    playTurn(player1, player2);
+  };
+
+  const resetGame = () => {
+    Elements.setWinner();
 
     Gameboard.create();
+
     playTurn(player1, player2);
   };
 
@@ -139,12 +197,16 @@ const Controller = (() => {
         return values.every((value) => value == player.mark);
       });
 
-      if (winner) return { ...winner, winCondition };
+      if (winner) {
+        winner.winCondition = winCondition;
+        return winner;
+      }
     }
   };
 
   return {
     startGame,
+    resetGame,
   };
 })();
 
