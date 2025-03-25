@@ -26,7 +26,7 @@ const Elements = (() => {
       player.classList.toggle("current", players[index] === current);
       player.classList.toggle("winner", players[index] === winner);
 
-      player.querySelector(".player-name").textContent = players[index].name;
+      player.querySelector(".player-name").value = players[index].name;
       player
         .querySelector(".player-score")
         .querySelector(".player-score-number").textContent =
@@ -44,8 +44,15 @@ const Elements = (() => {
       return;
     }
 
+    if (winner == "Draw") {
+      winnerMessage.querySelector(".winner-name").textContent = " ";
+      winnerMessage.querySelector(".winner-prefix").textContent = "Draw!";
+    } else {
+      winnerMessage.querySelector(".winner-name").textContent = winner.name;
+      winnerMessage.querySelector(".winner-prefix").textContent = " wins!";
+    }
+
     winnerMessage.style.display = "inline";
-    const winnerName = winnerMessage.querySelector(".winner-name");
 
     const roundButton = document.querySelector(".round-button");
 
@@ -55,12 +62,15 @@ const Elements = (() => {
       "click",
       () => {
         roundButton.disabled = true;
+
+        roundNumber = document.querySelector(".round-number");
+
+        roundNumber.textContent = +roundNumber.textContent + 1;
+
         Controller.resetGame();
       },
       { once: true }
     );
-
-    winnerName.textContent = winner.name;
   };
 
   const clearBoard = () => {
@@ -126,9 +136,11 @@ const Controller = (() => {
   const player1 = player("Me", "X");
   const player2 = player("Not Me", "O");
 
+  document.querySelector(".round-number").textContent = 1;
+
   let currentPlayer;
   const playTurn = (player1, player2) => {
-    winner = checkWinner(Gameboard.getBoard());
+    const winner = checkWinner(Gameboard.getBoard());
 
     if (!winner) {
       currentPlayer = currentPlayer === player1 ? player2 : player1;
@@ -146,6 +158,8 @@ const Controller = (() => {
           );
         }
       });
+    } else if (winner == "Draw") {
+      Elements.setWinner(winner);
     } else {
       winner.giveScore();
 
@@ -201,6 +215,12 @@ const Controller = (() => {
         winner.winCondition = winCondition;
         return winner;
       }
+    }
+
+    console.log(board);
+
+    if (board.every((value) => value.mark !== "")) {
+      return "Draw";
     }
   };
 
