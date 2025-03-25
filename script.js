@@ -2,7 +2,6 @@ const Elements = (() => {
   const boardContainer = document.querySelector(".board-container");
   const winnerMessage = document.querySelector(".winner-message");
   const gameStats = document.querySelector(".game-stats");
-
   const resetButton = document.querySelector(".reset-button");
 
   resetButton.addEventListener("click", () => {
@@ -46,10 +45,10 @@ const Elements = (() => {
 
     if (winner == "Draw") {
       winnerMessage.querySelector(".winner-name").textContent = " ";
-      winnerMessage.querySelector(".winner-prefix").textContent = "Draw!";
+      winnerMessage.querySelector(".winner-suffix").textContent = "Draw!";
     } else {
       winnerMessage.querySelector(".winner-name").textContent = winner.name;
-      winnerMessage.querySelector(".winner-prefix").textContent = " wins!";
+      winnerMessage.querySelector(".winner-suffix").textContent = " wins!";
     }
 
     winnerMessage.style.display = "inline";
@@ -133,8 +132,18 @@ const Controller = (() => {
     return newPlayer;
   }
 
-  const player1 = player("Me", "X");
-  const player2 = player("Not Me", "O");
+  const player1 = player("Player One", "X");
+  const player2 = player("Player Two", "O");
+
+  const nameInputs = document.querySelectorAll(".player-name");
+
+  nameInputs.forEach((nameInput, index) => {
+    nameInput.addEventListener("change", () => {
+      if (nameInput.value == "") nameInput.value = "name";
+
+      players[index].name = nameInput.value;
+    });
+  });
 
   document.querySelector(".round-number").textContent = 1;
 
@@ -216,8 +225,6 @@ const Controller = (() => {
         return winner;
       }
     }
-
-    console.log(board);
 
     if (board.every((value) => value.mark !== "")) {
       return "Draw";
