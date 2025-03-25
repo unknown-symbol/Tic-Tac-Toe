@@ -1,5 +1,6 @@
 const Elements = (() => {
   const boardContainer = document.querySelector(".board-container");
+  const winnerMessage = document.querySelector(".winner-message");
 
   const getSquares = () => {
     return boardContainer.querySelectorAll(".square");
@@ -10,6 +11,14 @@ const Elements = (() => {
     square.className = "square";
     square.textContent = mark;
     return square;
+  };
+
+  const setWinner = (winner) => {
+    if (!winner) return;
+    winnerMessage.style.display = "inline";
+    const winnerName = winnerMessage.querySelector(".winner-name");
+
+    winnerName.textContent = winner.name;
   };
 
   const clearBoard = () => {
@@ -25,7 +34,7 @@ const Elements = (() => {
     });
   };
 
-  return { createBoard, getSquares, clearBoard };
+  return { createBoard, getSquares, clearBoard, setWinner };
 })();
 
 const Gameboard = (() => {
@@ -90,14 +99,18 @@ const Controller = (() => {
         }
       });
     } else {
-      console.log(`Game ended! ${winner.name} wins`);
-      console.log(`${winner.winCondition}`);
+      Elements.setWinner(winner);
+      Elements.getSquares().forEach((element, index) => {
+        if (winner.winCondition.includes(index)) {
+          element.classList += " win-position";
+        }
+      });
     }
   };
 
   const startGame = () => {
-    const player1 = player("Me", "X");
-    const player2 = player("Not me", "O");
+    const player1 = player("one", "X");
+    const player2 = player("two", "O");
 
     Gameboard.create();
     playTurn(player1, player2);

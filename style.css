@@ -2,32 +2,69 @@
   box-sizing: border-box;
   font-family: Arial, Helvetica, sans-serif;
 }
+body,
+html {
+  height: 100%;
+  background: #212121;
+  overflow: hidden;
+}
+.game-container {
+  display: flex;
+  height: 100%;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+}
 .board-container {
   display: grid;
   gap: 0;
   width: fit-content;
-  border: 1px solid #000000;
+  position: relative;
+  border: 1px solid #ffffffaa;
+  border-radius: 5px;
   grid-template-columns: repeat(3, 1fr);
 }
 .square {
   user-select: none;
-  font-size: 3rem;
-  position: relative;
+  font-size: 6rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid #000000;
-  width: 50px;
-  height: 50px;
+  border: 1px solid #ffffff20;
+  color: #fff;
+  width: 100px;
+  height: 100px;
+}
+.X-mark::before,
+.O-mark:before {
+  position: absolute;
+  opacity: 0.3;
 }
 .X-mark:hover::before {
   content: "X";
-  position: absolute;
-  opacity: 0.3;
 }
-
 .O-mark:hover::before {
   content: "O";
+}
+.win-position {
+  background: #00ff0050;
+  border: 1px solid #00ff0050;
+}
+.winner-message {
   position: absolute;
-  opacity: 0.3;
+  display: none;
+  user-select: none;
+  align-self: center;
+  font-weight: 600;
+  color: aliceblue;
+  text-shadow: 2px 2px 1px #000;
+  text-align: center;
+  background: #00000070;
+  width: 100%;
+  font-size: 2rem;
+  box-shadow: inset 0px 0px 10px -5px #000;
+  padding: 5px 20px;
+}
+.winner-name {
+  color: rgb(241, 255, 117);
 }
