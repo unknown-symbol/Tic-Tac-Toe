@@ -53,6 +53,8 @@ const Gameboard = (() => {
 })();
 
 const Controller = (() => {
+  const players = [];
+
   function player(name, mark) {
     this.name = name;
     this.mark = mark;
@@ -61,13 +63,19 @@ const Controller = (() => {
     const getScore = () => score;
     const giveScore = () => score++;
 
-    return { name, mark, getScore, giveScore };
+    const newPlayer = { name, mark, getScore, giveScore };
+
+    players.push(newPlayer);
+    return newPlayer;
   }
 
   let currentPlayer;
   const playTurn = (player1, player2) => {
     currentPlayer = currentPlayer === player1 ? player2 : player1;
-    if (!checkWinner(Gameboard.getBoard())) {
+
+    winner = checkWinner(Gameboard.getBoard());
+
+    if (!winner) {
       Elements.getSquares().forEach((element, index) => {
         if (element.textContent == "") {
           element.classList += ` ${currentPlayer.mark}-mark`;
@@ -81,6 +89,9 @@ const Controller = (() => {
           );
         }
       });
+    } else {
+      console.log(`Game ended! ${winner.name} wins`);
+      console.log(`${winner.winCondition}`);
     }
   };
 
@@ -103,6 +114,20 @@ const Controller = (() => {
       [0, 4, 8],
       [2, 4, 6],
     ];
+
+    for (const winCondition of winConditions) {
+      const values = [];
+
+      winCondition.forEach((position) => {
+        values.push(board[position].mark);
+      });
+
+      const winner = players.find((player) => {
+        return values.every((value) => value == player.mark);
+      });
+
+      if (winner) return { ...winner, winCondition };
+    }
   };
 
   return {
