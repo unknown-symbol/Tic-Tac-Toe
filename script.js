@@ -69,16 +69,17 @@ const Controller = (() => {
     currentPlayer = currentPlayer === player1 ? player2 : player1;
     if (!checkWinner(Gameboard.getBoard())) {
       Elements.getSquares().forEach((element, index) => {
-        element.addEventListener(
-          "click",
-          () => {
-            if (element.textContent == "") {
+        if (element.textContent == "") {
+          element.classList += ` ${currentPlayer.mark}-mark`;
+          element.addEventListener(
+            "click",
+            () => {
               Gameboard.setMark(currentPlayer.mark, index);
               playTurn(player1, player2);
-            }
-          },
-          { once: true }
-        );
+            },
+            { once: true }
+          );
+        }
       });
     }
   };
